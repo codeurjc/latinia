@@ -1,0 +1,28 @@
+node('worker') {
+  docker.image('mysql:5.7').withRun('--name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=r00t -e MYSQL_DATABASE=springboot_mysql_example') { c ->
+    def mycontainer = docker.image('maven:3.3-jdk-8')
+
+    mycontainer.pull()
+    mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+      stage('Cloning the repo...') {
+        sh 'rm -rf spring-boot-mysql-example || true'
+        sh 'git clone https://github.com/codeurjc/spring-boot-mysql-example'
+      }
+      stage('Installing...') {
+        sh 'cd spring-boot-mysql-example && mvn -DskipTests=true install'
+      }
+      stage('Building...') {
+        sh 'cd spring-boot-mysql-example && mvn -DskipTests=true clean package'
+      }
+      stage('Creating Docker image...') {
+        sh 'cd spring-boot-mysql-example && ./build_image.sh'
+      }
+      stage('Checking image...') {
+        sh 'DB=$(docker inspect --format=\'{{range .NetworkSettings.Networks}}{{ .IPAddress}}{{end}}\' mysql)'
+        sh 'docker run -d -p 8080:8080 -e ${DB} spring-boot-mysql-example:latest'
+        sh 'sleep 5 && curl --location --output /dev/null --silent --write-out "%{http_code}\\n" ${URL} | grep "200"'
+      }
+    }
+  }
+}
+
