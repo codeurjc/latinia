@@ -1,0 +1,32 @@
+DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
+WEBSPHERE = "${env.DOCKER_REGISTRY}/websphere:webProfile8"
+
+node('worker') {
+  def mycontainer = docker.image(DID)
+
+  stage('Cloning repo...') {
+    mycontainer.inside('-u root:root -v ${WORKSPACE}:/workdir -w /workdir') {
+      git 'https://github.com/codeurjc/latinia'
+    }
+  }
+  stage('Testing webapp') {
+    withCredentials([string(credentialsId: '92cf8b6d-d622-4cb2-b27c-cd901b863570', variable: 'PASSWORD')]) {
+    
+      docker.image(WEBSPHERE).withRun("--name websphere -p 9080:9080 -v /home/jenkins/workspace/TestApp2/latinia/websphere:/config/dropins") { c ->
+      mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+        sleep 30
+          RES = sh (
+            script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:9080',
+            returnStdout: true
+          ).trim()
+          if (RES == '200') {
+            echo "Success!"
+          } else {
+            echo "El test ha fallado con el código de salida ${RES}"
+            error 'Test failed'
+          }
+        }
+      }
+    }
+  }
+}
