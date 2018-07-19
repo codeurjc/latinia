@@ -13,7 +13,7 @@ node('worker') {
   stage('Testing webapp') {
     withCredentials([string(credentialsId: '92cf8b6d-d622-4cb2-b27c-cd901b863570', variable: 'PASSWORD')]) {
     
-      docker.image(WEBLOGIC).withRun("--name wlsadmin -p 7001:7001 --hostname wlsadmin -e ADMIN_PASSWORD=$PASSWORD -v /home/jenkins/workspace/TestApp/oracle:/u01/oracle/user_projects -v /home/jenkins/workspace/TestApp/app:/u01/oracle/user_projects/domains/TEST/autodeploy --env-file /home/jenkins/workspace/TestApp/app/domain.properties") { c ->
+      docker.image(WEBLOGIC).withRun("-u root:root --name wlsadmin -p 7001:7001 --hostname wlsadmin -e ADMIN_PASSWORD=$PASSWORD -v ${WORKSPACE}/oracle:/u01/oracle/user_projects -v ${WORKSPACE}/app:/u01/oracle/user_projects/domains/TEST/autodeploy --env-file ${WORKSPACE}/app/domain.properties") { c ->
       mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
         sleep 30
           RES = sh (
@@ -34,7 +34,5 @@ node('worker') {
 
 
 
-RES = sh (
-  script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:7001/hello-world',
-  returnStdout: true
-).trim()
+
+
