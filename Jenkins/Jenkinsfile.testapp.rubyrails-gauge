@@ -1,0 +1,22 @@
+GAUGE = "${env.DOCKER_REGISTRY}/gauge"
+TESTAPP = "${env.DOCKER_REGISTRY}/testapp"
+
+node('worker') {
+  def mycontainer = docker.image(GAUGE)
+  docker.image(TESTAPP).withRun("--name testapp -p 8000:8000") { c ->
+    mycontainer.inside('-u root:root ') {
+      stage('Preparing env...') {
+        sh 'rm -rf latinia || true'
+      }
+      stage('Cloning repository...') {
+        git 'https://github.com/codeurjc/latinia'
+      }
+      stage('Testing web app...') {
+        wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+          sh '/usr/bin/Xvfb :99 -screen 0 1024x768x16 &'
+          sh 'cd gauge/java-maven-selenium && mvn test'
+        }
+      }
+    }
+  }
+}
