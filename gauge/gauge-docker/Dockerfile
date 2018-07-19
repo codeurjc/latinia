@@ -23,7 +23,7 @@ COPY wrap_chrome_binary /opt/bin/wrap_chrome_binary
 RUN /opt/bin/wrap_chrome_binary
 
 # Install gauge
-RUN apt-key adv --keyserver hkp://pool.sks-keyservers.net --recv-keys 023EDB0B && \
+RUN apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys 023EDB0B && \
     echo deb https://dl.bintray.com/gauge/gauge-deb stable main > /etc/apt/sources.list.d/gauge.list && \
     apt-get update && \
     apt-get install gauge
