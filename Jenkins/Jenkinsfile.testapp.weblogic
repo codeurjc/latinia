@@ -1,5 +1,4 @@
 DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
-WEBLOGIC = "${env.DOCKER_REGISTRY}/weblogic:12.2.1.3-developer"
 
 node('worker') {
   def mycontainer = docker.image(DID)
@@ -10,12 +9,15 @@ node('worker') {
       sh 'mkdir -p oracle && chmod -R 777 oracle'
     }
   }
-  stage('Testing webapp') {
+  stage('Building container...') {
+    sh 'cd app && docker build --no-cache=true -t weblogic-app .'
+  }
+  stage('Testing webapp...') {
     withCredentials([string(credentialsId: '92cf8b6d-d622-4cb2-b27c-cd901b863570', variable: 'PASSWORD')]) {
     
-      docker.image(WEBLOGIC).withRun("-u root:root --name wlsadmin -p 7001:7001 --hostname wlsadmin -e ADMIN_PASSWORD=$PASSWORD -v ${WORKSPACE}/oracle:/u01/oracle/user_projects -v ${WORKSPACE}/app:/u01/oracle/user_projects/domains/TEST/autodeploy --env-file ${WORKSPACE}/app/domain.properties") { c ->
-      mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
-        sleep 30
+      docker.image('weblogic-app').withRun("-u root:root --name wlsadmin -p 7001:7001 --hostname wlsadmin -e ADMIN_PASSWORD=$PASSWORD --env-file ${WORKSPACE}/app/domain.properties") { c ->
+        mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+          sleep 30
           RES = sh (
             script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:7001/hello-world',
             returnStdout: true
@@ -28,6 +30,13 @@ node('worker') {
           }
         }
       }
+    }
+  }
+  stage('Uploading image...') {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DOCKER_REGISTRY_CREDENTIALS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+      sh "docker tag weblogic-app ${env.DOCKER_REGISTRY}/weblogic-app"
+      sh "docker login -u $USERNAME -p $PASSWORD ${env.DOCKER_REGISTRY}"
+      sh "docker push ${env.DOCKER_REGISTRY}/weblogic-app"
     }
   }
 }

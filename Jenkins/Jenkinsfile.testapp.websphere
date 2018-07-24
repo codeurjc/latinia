@@ -1,5 +1,4 @@
 DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
-WEBSPHERE = "${env.DOCKER_REGISTRY}/websphere:webProfile8"
 
 node('worker') {
   def mycontainer = docker.image(DID)
@@ -9,12 +8,15 @@ node('worker') {
       git 'https://github.com/codeurjc/latinia'
     }
   }
+  stage('Building container...') {
+    sh 'cd websphere && docker build --no-cache=true -t websphere-app .'
+  }
   stage('Testing webapp') {
     withCredentials([string(credentialsId: '92cf8b6d-d622-4cb2-b27c-cd901b863570', variable: 'PASSWORD')]) {
     
-      docker.image(WEBSPHERE).withRun("--name websphere -p 9080:9080 -v /home/jenkins/workspace/TestApp2/latinia/websphere:/config/dropins") { c ->
-      mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
-        sleep 30
+      docker.image('websphere-app').withRun("--name websphere -p 9080:9080") { c ->
+        mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+          sleep 60
           RES = sh (
             script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:9080',
             returnStdout: true
@@ -27,6 +29,13 @@ node('worker') {
           }
         }
       }
+    }
+  }
+  stage('Uploading image...') {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DOCKER_REGISTRY_CREDENTIALS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+      sh "docker tag websphere-app ${env.DOCKER_REGISTRY}/websphere-app"
+      sh "docker login -u $USERNAME -p $PASSWORD ${env.DOCKER_REGISTRY}"
+      sh "docker push ${env.DOCKER_REGISTRY}/websphere-app"
     }
   }
 }
