@@ -1,4 +1,5 @@
 DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
+ORACLEDB = "${env.DOCKER_REGISTRY}/database:12.2.0.1-se2"
 
 node('worker') {
   def mycontainer = docker.image(DID)
@@ -6,24 +7,29 @@ node('worker') {
   mycontainer.pull()
   mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
     stage('Cloning the repo...') {
-      sh 'rm -rf spring-boot-mysql-example || true'
-      sh 'git clone https://github.com/codeurjc/spring-boot-mysql-example'
+      sh 'rm -rfv ${WORKSPACE}/* || true'
+      git 'https://github.com/codeurjc/latinia'
+      sh 'mkdir -p ${WORKSPACE}/oracle && chmod a+w ${WORKSPACE}/oracle'
     }
-    stage('Installing...') {
-      sh 'cd spring-boot-mysql-example && mvn -DskipTests=true install'
+    stage('Installing ojdbc...') {
+      sh 'cd spring-boot-oracle-example-master && mvn install:install-file -Dfile=ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar'
     }
     stage('Building...') {
-      sh 'cd spring-boot-mysql-example && mvn -DskipTests=true clean package'
+      sh 'cd spring-boot-oracle-example-master && mvn -DskipTests=true clean package'
     }
     stage('Creating Docker image...') {
-      sh 'cd spring-boot-mysql-example && ./build_image.sh'
+      sh 'cd spring-boot-oracle-example-master && cp target/*jar Docker/'
+      sh 'cd spring-boot-oracle-example-master/Docker && docker build -t springboot-oracle .'
     }
   }
-  docker.image('mysql:5.7').withRun('--name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=r00t -e MYSQL_DATABASE=springboot_mysql_example') { c ->
-    docker.image('spring-boot-mysql-example:latest').withRun('--name app -p 8080:8080 -e DB=172.17.0.1') { d ->
+  docker.image(ORACLEDB).withRun('--name oracledb -p 1521:1521 -p 5500:5500 -v ${WORKSPACE}/oracle:/opt/oracle/oradata -e ORACLE_CHARACTERSET=UTF8 -e ORACLE_PWD=Test1234') { c ->
+    stage('Waiting for oracle to be ready...') {
+      sh 'cd spring-boot-oracle-example-master && ./wait_db.sh'
+    }
+    docker.image('springboot-oracle:latest').withRun('--name app -p 8080:8080 -e ORACLE_IP=172.17.0.1 -e ORACLE_SCHEME=ORCLPDB1 -e ORACLE_PASS=Test1234') { d ->
       mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
         stage('Checking image...') {
-          sleep 30
+          sleep 60
           RES = sh (
             script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:8080',
             returnStdout: true
@@ -37,14 +43,16 @@ node('worker') {
       if (RES == '200') {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DOCKER_REGISTRY_CREDENTIALS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
           sh "docker login -u $USERNAME -p $PASSWORD ${env.DOCKER_REGISTRY}"
-          sh "docker tag spring-boot-mysql-example ${env.DOCKER_REGISTRY}/spring-boot-mysql-example"
-          sh "docker push ${env.DOCKER_REGISTRY}/spring-boot-mysql-example"
+          sh "docker tag springboot-oracle ${env.DOCKER_REGISTRY}/springboot-oracle"
+          sh "docker push ${env.DOCKER_REGISTRY}/springboot-oracle"
         }
       }
       else {
         echo "El test ha fallado con el código de salida ${RES}"
+        sh 'exit 1'
       }
     }
   }
 }
+
 
