@@ -1,10 +1,13 @@
 DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
+GAUGE = "${env.DOCKER_REGISTRY}/gauge"
 
 node('worker') {
   def mycontainer = docker.image(DID)
+  def gauge_docker = docker.image(GAUGE)
 
   stage('Cloning repo & adjusting permissions...') {
     mycontainer.inside('-u root:root -v ${WORKSPACE}:/workdir -w /workdir') {
+      sh 'rm -rf app || true'
       git 'https://github.com/codeurjc/latinia'
       sh 'mkdir -p oracle && chmod -R 777 oracle'
     }
@@ -16,13 +19,16 @@ node('worker') {
     withCredentials([string(credentialsId: '92cf8b6d-d622-4cb2-b27c-cd901b863570', variable: 'PASSWORD')]) {
     
       docker.image('weblogic-app').withRun("-u root:root --name wlsadmin -p 7001:7001 --hostname wlsadmin -e ADMIN_PASSWORD=$PASSWORD --env-file ${WORKSPACE}/app/domain.properties") { c ->
-        mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
-          sleep 30
+        gauge_docker.inside('--name gauge -u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+          sleep 60
+          sh '/usr/bin/Xvfb :99 -screen 0 1024x768x16 &'
+          sh 'cd ${WORKSPACE}/app/gaugeWeblogic && gauge run specs/0.1Comprobar.spec > output.txt'
+          sh 'cat ${WORKSPACE}/app/gaugeWeblogic/output.txt'
           RES = sh (
-            script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:7001/hello-world',
+            script: 'cd ${WORKSPACE}/app/gaugeWeblogic && grep "ERR:" output.txt ',
             returnStdout: true
           ).trim()
-          if (RES == '200') {
+          if (RES == '0') {
             echo "Success!"
           } else {
             echo "El test ha fallado con el código de salida ${RES}"
