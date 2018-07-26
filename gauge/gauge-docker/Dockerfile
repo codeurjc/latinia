@@ -34,6 +34,9 @@ RUN gauge install java && \
     gauge install screenshot && \
     gauge install html-report
 
+# Sahi
+ADD sahi /sahi
+
 ENV PATH=$HOME/.gauge:$PATH
 ENV DISPLAY :99.0
 
