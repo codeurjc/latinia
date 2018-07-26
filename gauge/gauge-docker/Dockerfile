@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -qqy \
     software-properties-common \
     xvfb \
     supervisor \
-    wget
+    wget \
+    firefox
 
 # Install Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -30,7 +31,8 @@ RUN apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys 023EDB0
 
 # Install gauge plugins
 RUN gauge install java && \
-    gauge install screenshot
+    gauge install screenshot && \
+    gauge install html-report
 
 ENV PATH=$HOME/.gauge:$PATH
 ENV DISPLAY :99.0
