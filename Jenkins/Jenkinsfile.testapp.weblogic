@@ -20,24 +20,24 @@ node('worker') {
     
       docker.image('weblogic-app').withRun("-u root:root --name wlsadmin -p 7001:7001 --hostname wlsadmin -e ADMIN_PASSWORD=$PASSWORD --env-file ${WORKSPACE}/app/domain.properties") { c ->
         gauge_docker.inside('--name gauge -u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
-          sleep 60
-          sh '/usr/bin/Xvfb :99 -screen 0 1024x768x16 &'
-          sh 'cd ${WORKSPACE}/app/gaugeWeblogic && gauge run specs/0.1Comprobar.spec > output.txt'
-          sh 'cat ${WORKSPACE}/app/gaugeWeblogic/output.txt'
-          RES = sh (
-            script: 'cd ${WORKSPACE}/app/gaugeWeblogic && grep "ERR:" output.txt ',
-            returnStdout: true
-          ).trim()
-          if (RES == '0') {
-            echo "Success!"
-          } else {
-            echo "El test ha fallado con el código de salida ${RES}"
-            error 'Test failed'
+          wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+            sleep 60
+            RES = sh (
+              script: 'cd ${WORKSPACE}/app/gaugeWeblogic && ./run_test.sh',
+              returnStatus: true
+            )
+            archiveArtifacts 'reports.tar.gz'
+            if (RES == 0) {
+              echo "Success!"
+            } else {
+              echo "Hay errores en el test"
+              error 'Test failed'
+            }
           }
         }
       }
     }
-  }
+  }  
   stage('Uploading image...') {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DOCKER_REGISTRY_CREDENTIALS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
       sh "docker tag weblogic-app ${env.DOCKER_REGISTRY}/weblogic-app"

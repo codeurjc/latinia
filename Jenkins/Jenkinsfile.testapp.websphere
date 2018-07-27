@@ -1,31 +1,38 @@
 DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
+GAUGE = "${env.DOCKER_REGISTRY}/gauge"
 
 node('worker') {
   def mycontainer = docker.image(DID)
+  def gauge_docker = docker.image(GAUGE)
 
   stage('Cloning repo...') {
     mycontainer.inside('-u root:root -v ${WORKSPACE}:/workdir -w /workdir') {
+      sh 'rm -rf websphere || true'
       git 'https://github.com/codeurjc/latinia'
     }
   }
+
   stage('Building container...') {
     sh 'cd websphere && docker build --no-cache=true -t websphere-app .'
   }
   stage('Testing webapp') {
     withCredentials([string(credentialsId: '92cf8b6d-d622-4cb2-b27c-cd901b863570', variable: 'PASSWORD')]) {
     
-      docker.image('websphere-app').withRun("--name websphere -p 9080:9080") { c ->
-        mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
-          sleep 60
-          RES = sh (
-            script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:9080',
-            returnStdout: true
-          ).trim()
-          if (RES == '200') {
-            echo "Success!"
-          } else {
-            echo "El test ha fallado con el código de salida ${RES}"
-            error 'Test failed'
+      docker.image('websphere-app').withRun("-u root:root --name websphere -p 9080:9080") { c ->
+        gauge_docker.inside('--name gauge -u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+          wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+            sleep 10
+            RES = sh (
+              script: 'cd ${WORKSPACE}/websphere/gauge && ./run_test.sh',
+              returnStatus: true
+            )
+            archiveArtifacts 'reports.tar.gz'
+            if (RES == 0) {
+              echo "Success!"
+            } else {
+              echo "Hay errores en el test"
+              error 'Test failed'
+            }
           }
         }
       }
@@ -39,3 +46,4 @@ node('worker') {
     }
   }
 }
+
