@@ -1,5 +1,4 @@
-#!/bin/bash -x
-set -eu -o pipefail
+#!/bin/bash 
 
 /usr/bin/Xvfb :99 -screen 0 1024x768x16 &
 
@@ -8,9 +7,9 @@ gauge run specs/0.1Comprobar.spec > output.txt
 
 cat output.txt
 
-RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep ERR | wc -l)
+RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep "ERR:")
 
-if [ "$RES" -eq "0" ]; then
+if [ z"$RES" -eq z"" ]; then
   echo "Salgo"
   exit 0
 else
