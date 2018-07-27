@@ -9,7 +9,7 @@ cat output.txt
 
 RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep "ERR:")
 
-if [ z"$RES" -eq z"" ]; then
+if [ z"$RES" == z"" ]; then
   echo "Salgo"
   exit 0
 else
