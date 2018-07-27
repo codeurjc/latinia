@@ -15,5 +15,5 @@ RES=$(grep "ERR:" ${WORKSPACE}/websphere/gauge/output.txt)
 if [ "$RES" == '0' ]; then
   exit 0
 else
-  exit $RES
+  exit 1
 fi
