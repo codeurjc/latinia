@@ -63,8 +63,8 @@ public class EstablecerHost {
                     System.out.println("Iniciando la sesion en " + host + ":" + port + " con Navegador '" + NAVEGADOR);
                     if (dir.contains("contracts")) {
                         browser.navigateTo("http://" + host + ":" + port + "/" + dir);
-                        } else {
-                        browser.navigateTo("http://" + host + "/" + dir);
+                    } else {
+                        browser.navigateTo("http://" + host + ":" + port + "/");
                     }
 
 
