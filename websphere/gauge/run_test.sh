@@ -9,6 +9,9 @@ cat output.txt
 
 RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep "ERR:")
 
+# Saving reports
+tar czf ${WORKSPACE}/reports.tar.gz ${WORKSPACE}/websphere/gauge/reports/html-report
+
 if [ z"$RES" == z"" ]; then
   exit 0
 else
