@@ -64,7 +64,7 @@ public class EstablecerHost {
                     if (dir.contains("hello-world")) {
                         browser.navigateTo("http://" + host + ":" + port + "/" + dir);
                         } else {
-                        browser.navigateTo("http://" + host + "/" + dir);
+                        browser.navigateTo("http://" + host + ":" + port + "/" + dir);
                     }
 
 
