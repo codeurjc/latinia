@@ -34,7 +34,7 @@ public class EstablecerHost {
      */
     public void establecerHostPort(String host, String port, String dir) throws Exception {
         String hostport="";
-        dir = "contracts/";
+        dir = "";
         if ((host.equals("")) && (port.equals(""))) {
 
             /**
