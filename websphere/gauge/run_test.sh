@@ -10,7 +10,8 @@ cat output.txt
 
 RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep ERR | wc -l)
 
-if [ "$RES" -eq 0 ]; then
+if [ "$RES" -eq "0" ]; then
+  echo "Salgo"
   exit 0
 else
   exit $RES
