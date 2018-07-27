@@ -10,7 +10,7 @@ cat output.txt
 
 RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep ERR | wc -l)
 
-if [ "$RES" -gt 0 ]; then
+if [ "$RES" -eq 0 ]; then
   exit 0
 else
   exit $RES
