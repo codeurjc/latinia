@@ -1,0 +1,56 @@
+DID = "${env.DOCKER_REGISTRY}/dev-ubuntu:20180713"
+ORACLEDB = "${env.DOCKER_REGISTRY}/database:12.2.0.1-se2"
+
+node('worker') {
+  def mycontainer = docker.image(DID)
+
+  mycontainer.pull()
+  mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+    stage('Cloning the repo...') {
+      sh 'rm -rfv ${WORKSPACE}/* || true'
+      git 'https://github.com/codeurjc/latinia'
+      sh 'mkdir -p ${WORKSPACE}/oracle && chmod a+w ${WORKSPACE}/oracle'
+    }
+    stage('Installing ojdbc...') {
+      sh 'cd spring-boot-oracle-example-master && mvn install:install-file -Dfile=ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar'
+    }
+    stage('Building...') {
+      sh 'cd spring-boot-oracle-example-master && mvn -DskipTests=true clean package'
+    }
+    stage('Creating Docker image...') {
+      sh 'cd spring-boot-oracle-example-master && cp target/*jar Docker/'
+      sh 'cd spring-boot-oracle-example-master/Docker && docker build -t springboot-websphere-oracle .'
+    }
+  }
+  docker.image(ORACLEDB).withRun('--name oracledb -p 1521:1521 -p 5500:5500 -v ${WORKSPACE}/oracle:/opt/oracle/oradata -e ORACLE_CHARACTERSET=UTF8 -e ORACLE_PWD=Test1234') { c ->
+    stage('Waiting for oracle to be ready...') {
+      sh 'cd spring-boot-oracle-example-master && ./wait_db.sh'
+    }
+    docker.image('springboot-websphere-oracle:latest').withRun('--name app -p 9080:9080') { d ->
+      mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+        stage('Checking image...') {
+          sleep 60
+          RES = sh (
+            script: 'curl --location --output /dev/null --silent --write-out "%{http_code}\\n" 172.17.0.1:8080',
+            returnStdout: true
+          ).trim()
+        }
+      }
+    }
+  }
+  mycontainer.inside('-u root:root -v /var/run/docker.sock:/var/run/docker.sock') {
+    stage('Uploading the image...') {
+      if (RES == '200') {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DOCKER_REGISTRY_CREDENTIALS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+          sh "docker login -u $USERNAME -p $PASSWORD ${env.DOCKER_REGISTRY}"
+          sh "docker tag springboot-oracle ${env.DOCKER_REGISTRY}/springboot-oracle"
+          sh "docker push ${env.DOCKER_REGISTRY}/springboot-oracle"
+        }
+      }
+      else {
+        echo "El test ha fallado con el código de salida ${RES}"
+        sh 'exit 1'
+      }
+    }
+  }
+}
