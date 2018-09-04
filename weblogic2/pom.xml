@@ -54,6 +54,21 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+   			<groupId>org.springframework.security.oauth</groupId>
+   			<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
+		<!-- Querydsl -->
+		<dependency>
+		  <groupId>com.querydsl</groupId>
+		  <artifactId>querydsl-core</artifactId>
+		  <version>4.2.1</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.querydsl</groupId>
+		  <artifactId>querydsl-jpa</artifactId>
+		  <version>4.2.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
