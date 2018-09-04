@@ -34,7 +34,7 @@ public class EstablecerHost {
      */
     public void establecerHostPort(String host, String port, String dir) throws Exception {
         String hostport="";
-        dir = "hello-world/";
+        dir = "sample1/";
         if ((host.equals("")) && (port.equals(""))) {
 
             /**
@@ -61,7 +61,7 @@ public class EstablecerHost {
 
 
                     System.out.println("Iniciando la sesion en " + host + ":" + port + " con Navegador '" + NAVEGADOR);
-                    if (dir.contains("hello-world")) {
+                    if (dir.contains("sample1")) {
                         browser.navigateTo("http://" + host + ":" + port + "/" + dir);
                         } else {
                         browser.navigateTo("http://" + host + ":" + port + "/" + dir);
