@@ -22,7 +22,7 @@ public class ComprobarComponentes {
     @Step("comprobar titulo")
     public void Comprobar() {
 
-        String texto = "SpringBoot Web App deploys on Tomcat";
+        String texto = "Spring Core Online Tutorial - List Products";
         //String texto = "APP";
 
         // Se realiza la consulta si el titulo es LATINIA si lo es informa que existe el titulo,
