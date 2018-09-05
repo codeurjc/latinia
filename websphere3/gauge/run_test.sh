@@ -7,7 +7,9 @@ gauge run specs/0.1Comprobar.spec > output.txt
 
 cat output.txt
 
-RES=$(cat ${WORKSPACE}/websphere2/gauge/output.txt | grep "ERR:")
+COMMAND="cat ${WORKSPACE}/websphere2/gauge/output.txt | grep \"ERR:\""
+eval $COMMAND
+RES=$?
 
 # Saving reports
 tar czf ${WORKSPACE}/reports.tar.gz ${WORKSPACE}/websphere2/gauge/reports/html-report
