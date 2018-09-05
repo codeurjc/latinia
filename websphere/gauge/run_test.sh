@@ -6,14 +6,11 @@ cd ${WORKSPACE}/websphere/gauge
 gauge run specs/0.1Comprobar.spec > output.txt
 
 cat output.txt
-
-RES=$(cat ${WORKSPACE}/websphere/gauge/output.txt | grep "ERR:")
+COMMAND="cat ${WORKSPACE}/websphere/gauge/output.txt | grep \"ERR:\""
+eval $COMMAND
+RES=$?
 
 # Saving reports
 tar czf ${WORKSPACE}/reports.tar.gz ${WORKSPACE}/websphere/gauge/reports/html-report
 
-if [ z"$RES" == z"" ]; then
-  exit 0
-else
-  exit $RES
-fi
+exit $RES

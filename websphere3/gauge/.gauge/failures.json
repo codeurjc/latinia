@@ -2,5 +2,7 @@
 	"Args": [
 		"run"
 	],
-	"FailedItems": []
+	"FailedItems": [
+		"specs/0.1Comprobar.spec:9"
+	]
 }
