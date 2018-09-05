@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -qqy \
     xvfb \
     supervisor \
     wget \
-    firefox
+    firefox \
+    x11vnc
 
 # Install Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -39,6 +40,10 @@ ADD sahi /sahi
 
 ENV PATH=$HOME/.gauge:$PATH
 ENV DISPLAY :99.0
+
+# VNC Config
+RUN mkdir ~/.vnc
+RUN x11vnc -storepasswd 1234 ~/.vnc/passwd
 
 # Cleanup
 RUN apt-get autoremove --purge
