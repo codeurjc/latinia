@@ -14,7 +14,7 @@ RES=$?
 # Saving reports
 tar czf ${WORKSPACE}/reports.tar.gz ${WORKSPACE}/websphere2/gauge/reports/html-report
 
-if [ z"$RES" == z"" ]; then
+if [ "$RES" == "0" ]; then
   exit 0
 else
   exit $RES
