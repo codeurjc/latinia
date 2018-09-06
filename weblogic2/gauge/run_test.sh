@@ -14,5 +14,8 @@ RES=$?
 # Saving reports
 tar czf ${WORKSPACE}/reports.tar.gz ${WORKSPACE}/weblogic2/gauge/reports/html-report
 
-exit $RES
-
+if [ "$RES" == "0" ]; then
+  exit 0
+else
+  exit $RES
+fi
