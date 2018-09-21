@@ -9,7 +9,8 @@ RUN apt-get update && \
     maven \
     git \
     curl \
-    openjdk-8-jdk
+    openjdk-8-jdk \
+    jq
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 
