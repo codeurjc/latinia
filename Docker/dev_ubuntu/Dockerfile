@@ -10,7 +10,8 @@ RUN apt-get update && \
     git \
     curl \
     openjdk-8-jdk \
-    jq
+    jq \
+    subversion
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 
