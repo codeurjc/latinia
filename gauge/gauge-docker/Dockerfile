@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -qqy \
     supervisor \
     wget \
     firefox \
-    x11vnc
+    x11vnc \
+    subversion
 
 # Install Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
