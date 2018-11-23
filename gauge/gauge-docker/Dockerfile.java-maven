@@ -43,7 +43,9 @@ RUN apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys 023EDB0
 # Install gauge plugins
 RUN gauge --install java && \
     gauge --install screenshot && \
-    gauge --install html-report
+    gauge --install html-report && \
+    gauge --install xml-report && \
+    gauge --install json-report
 
 # Sahi
 ADD sahi /sahi
