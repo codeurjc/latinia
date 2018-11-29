@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
     firefox \
     x11vnc \
     subversion \
-    ffmpeg
+    ffmpeg \
+    jq
 
 # Install Java
 COPY jdk-8u131-linux-x64.tar.gz /tmp/jdk-8u131-linux-x64.tar.gz
