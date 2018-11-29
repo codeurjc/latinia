@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
     wget \
     firefox \
     x11vnc \
-    subversion
+    subversion \
+    ffmpeg
 
 # Install Java
 COPY jdk-8u131-linux-x64.tar.gz /tmp/jdk-8u131-linux-x64.tar.gz
@@ -49,6 +50,10 @@ RUN gauge --install java && \
 
 # Sahi
 ADD sahi /sahi
+
+# Copy recordings scripts
+COPY start.sh /usr/local/bin/start.sh
+COPY stop.sh /usr/local/bin/stop.sh
 
 ENV PATH=$HOME/.gauge:$PATH
 ENV DISPLAY :99.0
