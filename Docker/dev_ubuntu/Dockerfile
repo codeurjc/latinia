@@ -1,5 +1,8 @@
 FROM ubuntu:16.04
 
+ARG MAVEN_VERSION 
+ARG JAVA_PKG 
+
 RUN apt-get update && \
     apt-get install -y \
     apt-transport-https \
@@ -18,9 +21,14 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get install -y docker-ce
 
 # Install Java
-COPY jdk-8u131-linux-x64.tar.gz /tmp/jdk-8u131-linux-x64.tar.gz
-RUN tar zxf /tmp/jdk-8u131-linux-x64.tar.gz -C /usr/src
+COPY ${JAVA_PKG} /tmp/${JAVA_PKG}
+RUN mkdir /usr/src/java
+RUN tar zxf /tmp/${JAVA_PKG} -C /usr/src/java --strip-components=1
+RUN rm /tmp/${JAVA_PKG}
 
 # Install MAVEN
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz -O /tmp/apache-maven-3.5.0-bin.tar.gz
-RUN tar zxf /tmp/apache-maven-3.5.0-bin.tar.gz -C /usr/src/    
+RUN curl https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -o /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+RUN tar zxf /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /usr/src/
+RUN rm /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz 
+
+ENV PATH=$PATH:/usr/src/java/bin:/usr/src/apache-maven-${MAVEN_VERSION}/bin
