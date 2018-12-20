@@ -3,6 +3,8 @@ FROM ubuntu:16.04
 ARG MAVEN_VERSION 
 ARG JAVA_PKG 
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && \
     apt-get install -qqy --no-install-recommends \
     apt-transport-https \
