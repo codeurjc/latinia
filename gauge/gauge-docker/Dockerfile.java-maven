@@ -1,4 +1,4 @@
-FROM dev:latest
+FROM registry01.corp.latiniaservices.com:5443/dev-ubuntu:latest
 
 ENV DEBIAN_FRONTEND noninteractive
 
