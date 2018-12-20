@@ -4,7 +4,7 @@ ARG MAVEN_VERSION
 ARG JAVA_PKG 
 
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -qqy --no-install-recommends \
     apt-transport-https \
     ca-certificates \
     curl \
