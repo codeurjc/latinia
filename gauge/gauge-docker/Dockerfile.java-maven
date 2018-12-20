@@ -10,7 +10,7 @@ RUN apt-get update && \
     curl \
     firefox \
     x11vnc \
-    ffmpeg \
+    ffmpeg
 
 # Install Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
