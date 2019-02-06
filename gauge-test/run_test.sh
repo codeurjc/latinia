@@ -1,7 +1,7 @@
-#!/bin/bash 
+#!/bin/bash -x
 
-XVFB=$(ps ax | grep "[/]usr/bin/Xvfb :99")
-if [ ! "$XVFB" == "1" ]; then
+XVFB=$(ps ax | grep "[/]usr/bin/Xvfb :99" | wc -l)
+if [ ! ${XVFB} == 1 ]; then
 	/usr/bin/Xvfb :99 -screen 0 1024x768x16 &
 	sleep 5
 fi
