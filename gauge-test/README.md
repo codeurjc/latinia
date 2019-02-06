@@ -117,6 +117,8 @@ Hemos lanzado el contenedor en segundo plano y nos conectaremos mediante VNC a l
 
 `localhost:5900`
 
+> La contraseña es `1234`
+
 Para conectar por VNC puedes usar el cliente VNC de esta URL:
 
 https://www.realvnc.com/en/connect/download/viewer/
