@@ -2,6 +2,8 @@ FROM registry01.corp.latiniaservices.com:5443/dev-ubuntu:latest
 
 ENV DEBIAN_FRONTEND noninteractive
 
+ARG GAUGE_VERSION
+
 # Install Software
 RUN apt-get update && \
     apt-get install -qqy --no-install-recommends \
@@ -27,7 +29,7 @@ RUN /opt/bin/wrap_chrome_binary
 RUN apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys 023EDB0B && \
     echo deb https://dl.bintray.com/gauge/gauge-deb stable main > /etc/apt/sources.list.d/gauge.list && \
     apt-get update && \
-    apt-get install gauge=0.8.5 && \
+    apt-get install gauge=${GAUGE_VERSION} && \
     gauge_setup
 
 # Install gauge plugins
