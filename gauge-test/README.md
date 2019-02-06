@@ -48,13 +48,13 @@ Para lanzar el ejemplo simplemente escribimos:
 
 Lo que hace este comando es:
 
-`-ti` Para que muestre la salida de la ejecución en consola.
-`--rm` Se elimina el contenedor tras la ejecución.
-`--name gauge` Lo hemos llamado gauge.
-`-v ${PWD}:/workdir` Mapeamos nuestro directorio local dentro del contenedor para poder ejecutar el script usando rutas conocidas.
-`-w /workdir` Este será nuestro directorio de trabajo dentro del contenedor.
-`codeurjc-gauge-ejemplo` El nombre de la imagen.
-`/workdir/run_test.sh` La ruta completa al script que vamos a lanzar.
+* `-ti` Para que muestre la salida de la ejecución en consola.
+* `--rm` Se elimina el contenedor tras la ejecución.
+* `--name gauge` Lo hemos llamado gauge.
+* `-v ${PWD}:/workdir` Mapeamos nuestro directorio local dentro del contenedor para poder ejecutar el script usando rutas conocidas.
+* `-w /workdir` Este será nuestro directorio de trabajo dentro del contenedor.
+* `codeurjc-gauge-ejemplo` El nombre de la imagen.
+* `/workdir/run_test.sh` La ruta completa al script que vamos a lanzar.
 
 Una vez lanzado deberemos ver algo así:
 
