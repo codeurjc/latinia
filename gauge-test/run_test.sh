@@ -9,8 +9,4 @@ fi
 gauge run specs/0.1Comprobar.spec > output.txt
 
 cat output.txt
-COMMAND="cat output.txt | grep \"ERR:\""
-eval $COMMAND
-RES=$?
 
-exit $RES
