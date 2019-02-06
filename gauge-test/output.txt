@@ -1,0 +1,18 @@
+Sahi properties file = /sahi/config/sahi.properties[0m
+Sahi user properties file = /workdir/sahi/userdata/config/userdata.properties
+[0m>>>> Sahi OS v5.0 started. Listening on port: 9999
+[0m>>>> Configure your browser to use this server and port as its proxy
+>>>> Browse any page and CTRL-ALT-DblClick on the page to bring up the Sahi Controller
+[0m-----[0m
+[0mReading browser types from: /workdir/sahi/userdata/config/browser_types.xml[0m
+[0m-----[0m
+[0mFeb 06, 2019 9:09:56 AM net.sf.sahi.ssl.SSLHelper getKeyManagerFactoryForRemoteFetch
+INFO: No SSL Client Cert specified
+[0mFeb 06, 2019 9:09:56 AM net.sf.sahi.test.ProcessHelper execute
+INFO: /usr/bin/firefox -profile "/workdir/sahi/userdata/browser/ff/profiles/sahi0" -no-remote http://sahi.example.com/_s_/dyn/Driver_start?sahisid=sahi_567840e30f8990482b0a4b400310798a9d3f__SahiAmpersandSahi__startUrl=http%3A%2F%2Fsahi.example.com%2F_s_%2Fdyn%2FDriver_initialized%3FstartUrl%3Dhttp%253A%252F%252Fsahi.example.com%252F_s_%252Fdyn%252FDriver_initialized
+[0mFeb 06, 2019 9:09:57 AM net.sf.sahi.test.ProcessHelper$PIDGatherer run
+INFO: PIDs: [85, 165]; 1238 ms
+[0m[0;36m# Specification Heading
+[0m[0;33m  ## Scenario Heading	[0mEL HOSTPORT ES: wiki.wargaming.net:80
+[0mIniciando la sesion en wiki.wargaming.net:80 con Navegador 'DEFAULT_BROWSER[0m
+[0m
