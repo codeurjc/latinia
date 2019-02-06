@@ -3,16 +3,37 @@ Sahi user properties file = /workdir/sahi/userdata/config/userdata.properties
 [0m>>>> Sahi OS v5.0 started. Listening on port: 9999
 [0m>>>> Configure your browser to use this server and port as its proxy
 >>>> Browse any page and CTRL-ALT-DblClick on the page to bring up the Sahi Controller
-[0m-----[0m
-[0mReading browser types from: /workdir/sahi/userdata/config/browser_types.xml[0m
-[0m-----[0m
-[0mFeb 06, 2019 9:09:56 AM net.sf.sahi.ssl.SSLHelper getKeyManagerFactoryForRemoteFetch
+[0m-----
+Reading browser types from: /workdir/sahi/userdata/config/browser_types.xml
+[0m-----
+[0mFeb 06, 2019 9:46:46 AM net.sf.sahi.ssl.SSLHelper getKeyManagerFactoryForRemoteFetch
 INFO: No SSL Client Cert specified
-[0mFeb 06, 2019 9:09:56 AM net.sf.sahi.test.ProcessHelper execute
-INFO: /usr/bin/firefox -profile "/workdir/sahi/userdata/browser/ff/profiles/sahi0" -no-remote http://sahi.example.com/_s_/dyn/Driver_start?sahisid=sahi_567840e30f8990482b0a4b400310798a9d3f__SahiAmpersandSahi__startUrl=http%3A%2F%2Fsahi.example.com%2F_s_%2Fdyn%2FDriver_initialized%3FstartUrl%3Dhttp%253A%252F%252Fsahi.example.com%252F_s_%252Fdyn%252FDriver_initialized
-[0mFeb 06, 2019 9:09:57 AM net.sf.sahi.test.ProcessHelper$PIDGatherer run
-INFO: PIDs: [85, 165]; 1238 ms
+[0mFeb 06, 2019 9:46:46 AM net.sf.sahi.test.ProcessHelper execute
+INFO: /usr/bin/firefox -profile "/workdir/sahi/userdata/browser/ff/profiles/sahi0" -no-remote http://sahi.example.com/_s_/dyn/Driver_start?sahisid=sahi_df258fa40adad04c4709b7d07d4f890c7e51__SahiAmpersandSahi__startUrl=http%3A%2F%2Fsahi.example.com%2F_s_%2Fdyn%2FDriver_initialized%3FstartUrl%3Dhttp%253A%252F%252Fsahi.example.com%252F_s_%252Fdyn%252FDriver_initialized
+[0mFeb 06, 2019 9:46:47 AM net.sf.sahi.test.ProcessHelper$PIDGatherer run
+INFO: PIDs: [86, 161]; 1430 ms
 [0m[0;36m# Specification Heading
-[0m[0;33m  ## Scenario Heading	[0mEL HOSTPORT ES: wiki.wargaming.net:80
+[0m[0;33m  ## Scenario Heading	[0mEL HOSTPORT ES: wiki.wargaming.net:80[0m
 [0mIniciando la sesion en wiki.wargaming.net:80 con Navegador 'DEFAULT_BROWSER[0m
+[0m[0;32m ✔[0mINF: **Existe el titulo Global wiki. Wargaming.net en la plataforma**
+[0m[0;32m ✔[0m
 [0m
+[0mFeb 06, 2019 9:46:50 AM net.sf.sahi.test.ProcessHelper kill
+INFO: Kill: [86, 161]
+[0mCerrada sesion del browserDetenido el PROXY
+[0mSocket closed[0m
+[0mSuccessfully generated html-report to => /workdir/reports/html-report/index.html
+[0mSpecifications:	1 executed	1 passed	0 failed	0 skipped
+Scenarios:	1 executed	1 passed	0 failed	0 skipped
+
+Total time taken: 5.958s
+
+Telemetry
+---------
+
+This installation of Gauge collects usage data in order to help us improve your experience.
+The data is anonymous and doesn't include command-line arguments.
+To turn this message off opt in or out by running 'gauge telemetry on' or 'gauge telemetry off'.
+
+Read more about Gauge telemetry at https://gauge.org/telemetry
+

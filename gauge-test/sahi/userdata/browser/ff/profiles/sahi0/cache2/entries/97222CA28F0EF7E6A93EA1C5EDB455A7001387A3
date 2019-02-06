@@ -279,14 +279,14 @@ if (_sahi.controllerMode == "testmaker"){
 			DOMAIN: "domain(<domain>)."		
 	};		
 }
-/** -- TestMaker Recorder End -- **/˜•Ÿ4zu      \Z§f\Z§f@æù\Z¶æ   1    :http://sahi.example.com/_s_/spr/language_pack.js necko:classified 1 strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
+/** -- TestMaker Recorder End -- **/ˆöÓzu      \Z≠\Z≠@ƒô\ZØ`   1    :http://sahi.example.com/_s_/spr/language_pack.js necko:classified 1 strongly-framed 1 request-method GET response-head HTTP/1.1 200 OK
 Content-Type: application/javascript
-Expires: Wed, 06 Feb 2019 09:19:58 UTC
+Expires: Wed, 06 Feb 2019 09:56:48 UTC
 Accept-Ranges: none
 Content-Length: 12208
  original-response-headers Content-Type: application/javascript
-Expires: Wed, 06 Feb 2019 09:19:58 UTC
+Expires: Wed, 06 Feb 2019 09:56:48 UTC
 Accept-Ranges: none
 Proxy-Connection: Keep-Alive
 Content-Length: 12208
- uncompressed-len 0 net-response-time-onstart 29 net-response-time-onstop 30   /∞
+ uncompressed-len 0 net-response-time-onstart 45 net-response-time-onstop 47   /∞
